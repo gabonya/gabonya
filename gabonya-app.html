@@ -1,0 +1,907 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>GABONYA — Поиск фотомоделей</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --cream: #F5F0EB;
+    --white: #FFFFFF;
+    --pink: #E8A0B0;
+    --pink-light: #F5D5DC;
+    --pink-pale: #FDF0F2;
+    --black: #1A1A1A;
+    --gray: #888888;
+    --gray-light: #E8E4E0;
+    --accent: #D4697E;
+  }
+
+  html, body {
+    height: 100%;
+    background: #1A1A1A;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Inter', sans-serif;
+  }
+
+  /* Phone shell */
+  .phone {
+    width: 390px;
+    height: 844px;
+    background: var(--cream);
+    border-radius: 50px;
+    overflow: hidden;
+    position: relative;
+    box-shadow: 0 40px 120px rgba(0,0,0,0.6), inset 0 0 0 1px rgba(255,255,255,0.1);
+  }
+
+  /* Status bar */
+  .status-bar {
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 52px;
+    padding: 16px 24px 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    z-index: 100;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--black);
+  }
+  .status-bar .time { font-size: 14px; font-weight: 700; }
+  .status-icons { display: flex; gap: 5px; align-items: center; }
+  .status-icons svg { width: 16px; height: 16px; }
+
+  /* Screens */
+  .screen {
+    position: absolute;
+    inset: 0;
+    background: var(--cream);
+    display: none;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  .screen.active { display: flex; }
+
+  /* ===== SPLASH SCREEN ===== */
+  #splash {
+    background: var(--cream);
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+  }
+  .splash-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+    animation: fadeUp 0.8s ease forwards;
+  }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .splash-logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 52px;
+    font-weight: 300;
+    letter-spacing: 8px;
+    color: var(--black);
+    margin-bottom: 6px;
+  }
+  .splash-sub {
+    font-size: 10px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--gray);
+    margin-bottom: 56px;
+  }
+  .spark-icon {
+    color: var(--accent);
+    margin-bottom: 48px;
+    animation: pulse 2s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.15); opacity: 0.8; }
+  }
+  .splash-headline {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 36px;
+    font-weight: 400;
+    text-align: center;
+    line-height: 1.2;
+    color: var(--black);
+    margin-bottom: 16px;
+    padding: 0 32px;
+  }
+  .splash-desc {
+    font-size: 13px;
+    color: var(--gray);
+    text-align: center;
+    line-height: 1.6;
+    margin-bottom: 64px;
+    padding: 0 48px;
+  }
+  .dots { display: flex; gap: 6px; margin-bottom: 48px; }
+  .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--pink-light); }
+  .dot.active { background: var(--accent); width: 18px; border-radius: 3px; }
+
+  /* ===== BUTTONS ===== */
+  .btn-primary {
+    background: var(--black);
+    color: white;
+    border: none;
+    border-radius: 50px;
+    padding: 18px 40px;
+    font-size: 14px;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: all 0.2s;
+    width: calc(100% - 64px);
+    justify-content: center;
+  }
+  .btn-primary:active { transform: scale(0.98); background: #333; }
+  .btn-primary svg { width: 16px; height: 16px; }
+
+  /* ===== HOME SCREEN ===== */
+  #home {
+    background: var(--cream);
+  }
+  .home-header {
+    padding: 60px 24px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .home-logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 28px;
+    font-weight: 300;
+    letter-spacing: 4px;
+    color: var(--black);
+  }
+  .icon-btn {
+    width: 40px; height: 40px;
+    border-radius: 50%;
+    background: var(--white);
+    border: none;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  }
+  .search-bar {
+    margin: 0 24px 20px;
+    background: var(--white);
+    border-radius: 16px;
+    padding: 14px 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  }
+  .search-bar input {
+    border: none;
+    background: transparent;
+    font-size: 13px;
+    color: var(--black);
+    flex: 1;
+    outline: none;
+    font-family: 'Inter', sans-serif;
+  }
+  .search-bar input::placeholder { color: var(--gray); }
+
+  .home-scroll {
+    flex: 1;
+    overflow-y: auto;
+    padding: 0 0 80px;
+    scrollbar-width: none;
+  }
+  .home-scroll::-webkit-scrollbar { display: none; }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 24px;
+    margin-bottom: 14px;
+  }
+  .section-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--black);
+  }
+  .section-link {
+    font-size: 12px;
+    color: var(--accent);
+    cursor: pointer;
+    font-weight: 500;
+  }
+
+  /* Categories */
+  .categories {
+    display: flex;
+    gap: 12px;
+    padding: 0 24px;
+    margin-bottom: 28px;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .categories::-webkit-scrollbar { display: none; }
+  .category-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    min-width: 72px;
+  }
+  .category-icon {
+    width: 64px; height: 64px;
+    border-radius: 18px;
+    background: var(--white);
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    color: var(--accent);
+    transition: all 0.2s;
+  }
+  .category-item:active .category-icon { transform: scale(0.95); background: var(--pink-pale); }
+  .category-name { font-size: 11px; color: var(--black); font-weight: 500; }
+
+  /* Model cards */
+  .model-list { padding: 0 24px; display: flex; flex-direction: column; gap: 12px; }
+  .model-card {
+    background: var(--white);
+    border-radius: 20px;
+    padding: 16px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    transition: all 0.2s;
+    position: relative;
+  }
+  .model-card:active { transform: scale(0.99); box-shadow: 0 1px 4px rgba(0,0,0,0.05); }
+  .model-avatar {
+    width: 56px; height: 56px;
+    border-radius: 16px;
+    background: var(--pink-light);
+    display: flex; align-items: center; justify-content: center;
+    color: var(--accent);
+    flex-shrink: 0;
+  }
+  .model-info { flex: 1; }
+  .model-name { font-size: 15px; font-weight: 600; color: var(--black); margin-bottom: 4px; }
+  .model-city { font-size: 12px; color: var(--gray); display: flex; align-items: center; gap: 4px; margin-bottom: 4px; }
+  .model-tags { font-size: 11px; color: var(--gray); }
+  .heart-btn { background: none; border: none; cursor: pointer; color: var(--gray-light); padding: 4px; }
+  .heart-btn.liked { color: var(--accent); }
+
+  /* Bottom nav */
+  .bottom-nav {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    background: var(--white);
+    border-top: 1px solid var(--gray-light);
+    padding: 12px 0 28px;
+    display: flex;
+    justify-content: space-around;
+    z-index: 50;
+  }
+  .nav-item {
+    display: flex; flex-direction: column; align-items: center; gap: 4px;
+    cursor: pointer; padding: 4px 12px;
+    color: var(--gray);
+    font-size: 10px; font-weight: 500;
+    transition: color 0.2s;
+  }
+  .nav-item.active { color: var(--accent); }
+  .nav-item svg { width: 22px; height: 22px; }
+
+  /* ===== MODEL PROFILE ===== */
+  #profile {
+    background: var(--cream);
+  }
+  .profile-header {
+    padding: 60px 24px 16px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .back-btn { background: none; border: none; cursor: pointer; color: var(--black); }
+  .profile-scroll {
+    flex: 1; overflow-y: auto; padding-bottom: 100px; scrollbar-width: none;
+  }
+  .profile-scroll::-webkit-scrollbar { display: none; }
+  .profile-photo {
+    margin: 0 24px 20px;
+    aspect-ratio: 4/3;
+    border-radius: 24px;
+    background: var(--pink-light);
+    display: flex; align-items: center; justify-content: center;
+    color: var(--accent);
+    position: relative;
+    overflow: hidden;
+  }
+  .photo-counter {
+    position: absolute; bottom: 12px; right: 12px;
+    background: rgba(0,0,0,0.6);
+    color: white;
+    font-size: 11px;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-weight: 500;
+  }
+  .profile-body { padding: 0 24px; }
+  .profile-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 32px;
+    font-weight: 400;
+    color: var(--black);
+    margin-bottom: 6px;
+  }
+  .profile-meta {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 14px;
+  }
+  .profile-city { font-size: 13px; color: var(--gray); display: flex; align-items: center; gap: 4px; }
+  .profile-rate { font-size: 13px; color: var(--accent); font-weight: 500; }
+  .profile-tags { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; }
+  .tag {
+    background: var(--white);
+    border-radius: 20px;
+    padding: 6px 14px;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--black);
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+  }
+  .profile-section-title {
+    font-size: 15px; font-weight: 600; color: var(--black);
+    margin-bottom: 10px;
+  }
+  .profile-desc {
+    font-size: 13px; color: var(--gray); line-height: 1.7;
+    margin-bottom: 20px;
+  }
+  .params-grid {
+    display: grid; grid-template-columns: repeat(5, 1fr);
+    gap: 8px; margin-bottom: 28px;
+  }
+  .param-item {
+    background: var(--white);
+    border-radius: 14px;
+    padding: 12px 8px;
+    text-align: center;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+  }
+  .param-label { font-size: 9px; color: var(--gray); margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.5px; }
+  .param-value { font-size: 13px; font-weight: 600; color: var(--black); }
+  .profile-actions {
+    position: absolute; bottom: 0; left: 0; right: 0;
+    background: var(--cream);
+    padding: 16px 24px 36px;
+    display: flex; gap: 12px;
+    border-top: 1px solid var(--gray-light);
+  }
+  .btn-contact {
+    flex: 1; background: var(--black); color: white;
+    border: none; border-radius: 50px;
+    padding: 16px; font-size: 14px; font-weight: 500;
+    cursor: pointer; transition: all 0.2s;
+  }
+  .btn-more {
+    width: 52px; height: 52px;
+    border-radius: 50%;
+    background: var(--white);
+    border: none; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    color: var(--black);
+  }
+
+  /* ===== ABOUT SCREEN ===== */
+  #about {
+    background: var(--white);
+  }
+  .about-header {
+    padding: 60px 24px 20px;
+    display: flex; align-items: center; gap: 16px;
+    background: var(--white);
+  }
+  .about-scroll { flex: 1; overflow-y: auto; scrollbar-width: none; padding-bottom: 40px; }
+  .about-scroll::-webkit-scrollbar { display: none; }
+  .about-title {
+    font-size: 22px; font-weight: 600; color: var(--black);
+  }
+  .about-hero {
+    padding: 32px 24px;
+    background: var(--cream);
+    margin: 0 0 24px;
+  }
+  .about-spark { color: var(--accent); margin-bottom: 20px; }
+  .about-headline {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 32px; font-weight: 400;
+    color: var(--black); line-height: 1.25;
+  }
+  .features { padding: 0 24px; display: flex; flex-direction: column; gap: 16px; }
+  .feature-item {
+    display: flex; gap: 16px; align-items: flex-start;
+    background: var(--cream);
+    border-radius: 20px; padding: 18px;
+  }
+  .feature-icon {
+    width: 44px; height: 44px;
+    border-radius: 14px;
+    background: var(--pink-pale);
+    display: flex; align-items: center; justify-content: center;
+    color: var(--accent); flex-shrink: 0;
+  }
+  .feature-text {}
+  .feature-title { font-size: 14px; font-weight: 600; color: var(--black); margin-bottom: 4px; }
+  .feature-desc { font-size: 12px; color: var(--gray); line-height: 1.5; }
+  .about-btn-wrap { padding: 32px 24px 0; }
+
+  /* Lang toggle */
+  .lang-toggle {
+    position: absolute; top: 60px; right: 60px;
+    display: flex; gap: 2px;
+    background: var(--gray-light);
+    border-radius: 20px; padding: 2px;
+    z-index: 200;
+  }
+  .lang-btn {
+    padding: 4px 10px; border-radius: 18px;
+    border: none; font-size: 10px; font-weight: 600;
+    cursor: pointer; transition: all 0.2s;
+    background: transparent; color: var(--gray);
+  }
+  .lang-btn.active { background: var(--white); color: var(--black); }
+
+  /* Animations */
+  .screen { animation: screenIn 0.3s ease; }
+  @keyframes screenIn {
+    from { opacity: 0; transform: translateX(20px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+</style>
+</head>
+<body>
+
+<div class="phone">
+
+  <!-- Status Bar -->
+  <div class="status-bar">
+    <span class="time">9:41</span>
+    <div class="status-icons">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M1 9l2 2c4.97-4.97 13.03-4.97 18 0l2-2C16.93 2.93 7.08 2.93 1 9zm8 8l3 3 3-3a4.237 4.237 0 00-6 0zm-4-4l2 2a7.074 7.074 0 0110 0l2-2C15.14 9.14 8.87 9.14 5 13z"/></svg>
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M15.67 4H14V2h-4v2H8.33C7.6 4 7 4.6 7 5.33v15.33C7 21.4 7.6 22 8.33 22h7.33c.74 0 1.34-.6 1.34-1.33V5.33C17 4.6 16.4 4 15.67 4z"/></svg>
+    </div>
+  </div>
+
+  <!-- ===== SPLASH ===== -->
+  <div id="splash" class="screen active">
+    <div class="splash-content">
+      <div class="splash-logo">GABONYA</div>
+      <div class="splash-sub" id="splash-sub">Поиск фотомоделей</div>
+      <div class="spark-icon">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M12 2L9.5 9.5 2 12l7.5 2.5L12 22l2.5-7.5L22 12l-7.5-2.5z"/>
+        </svg>
+      </div>
+      <div class="splash-headline" id="splash-headline">Находите свою идеальную фотомодель</div>
+      <div class="splash-desc" id="splash-desc">Тысячи талантливых девушек для ваших проектов</div>
+      <div class="dots">
+        <div class="dot active"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
+      </div>
+      <button class="btn-primary" onclick="goTo('home')">
+        <span id="splash-btn">Начать поиск</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- ===== HOME ===== -->
+  <div id="home" class="screen">
+    <!-- Lang toggle -->
+    <div class="lang-toggle">
+      <button class="lang-btn active" onclick="setLang('ru')">RU</button>
+      <button class="lang-btn" onclick="setLang('en')">EN</button>
+    </div>
+
+    <div class="home-header">
+      <div class="home-logo">GABONYA</div>
+      <button class="icon-btn">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 0 1-3.46 0"/>
+        </svg>
+      </button>
+    </div>
+
+    <div class="search-bar">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#888" stroke-width="2">
+        <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+      </svg>
+      <input type="text" id="search-input" placeholder="Поиск по имени, стилю, местоположению">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#888" stroke-width="2">
+        <line x1="4" y1="6" x2="20" y2="6"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="11" y1="18" x2="13" y2="18"/>
+      </svg>
+    </div>
+
+    <div class="home-scroll">
+      <div class="section-header" style="margin-top:4px">
+        <span class="section-title" id="cats-title">Популярные категории</span>
+        <span class="section-link" id="cats-all">Все</span>
+      </div>
+      <div class="categories">
+        <div class="category-item">
+          <div class="category-icon">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <circle cx="12" cy="8" r="4"/><path d="M20 21a8 8 0 1 0-16 0"/>
+            </svg>
+          </div>
+          <span class="category-name" id="cat1">Портрет</span>
+        </div>
+        <div class="category-item">
+          <div class="category-icon">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M20.38 3.46 16 2a4 4 0 01-8 0L3.62 3.46a2 2 0 00-1.34 2.23l.58 3.57a1 1 0 00.99.84H6v10c0 1.1.9 2 2 2h8a2 2 0 002-2V10h2.15a1 1 0 00.99-.84l.58-3.57a2 2 0 00-1.34-2.23z"/>
+            </svg>
+          </div>
+          <span class="category-name" id="cat2">Fashion</span>
+        </div>
+        <div class="category-item">
+          <div class="category-icon">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+            </svg>
+          </div>
+          <span class="category-name" id="cat3">Бьюти</span>
+        </div>
+        <div class="category-item">
+          <div class="category-icon">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/>
+            </svg>
+          </div>
+          <span class="category-name" id="cat4">Коммерция</span>
+        </div>
+      </div>
+
+      <div class="section-header">
+        <span class="section-title" id="models-title">Популярные модели</span>
+        <span class="section-link" id="models-all">Все</span>
+      </div>
+      <div class="model-list">
+        <div class="model-card" onclick="goTo('profile')">
+          <div class="model-avatar">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L9.5 9.5 2 12l7.5 2.5L12 22l2.5-7.5L22 12l-7.5-2.5z"/></svg>
+          </div>
+          <div class="model-info">
+            <div class="model-name">Алена С.</div>
+            <div class="model-city">
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+              Москва
+            </div>
+            <div class="model-tags" id="alena-tags">Портрет, Fashion, Бьюти</div>
+          </div>
+          <button class="heart-btn" onclick="event.stopPropagation();this.classList.toggle('liked')">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+            </svg>
+          </button>
+        </div>
+
+        <div class="model-card" onclick="goTo('profile')">
+          <div class="model-avatar">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L9.5 9.5 2 12l7.5 2.5L12 22l2.5-7.5L22 12l-7.5-2.5z"/></svg>
+          </div>
+          <div class="model-info">
+            <div class="model-name">Мария К.</div>
+            <div class="model-city">
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+              Санкт-Петербург
+            </div>
+            <div class="model-tags" id="maria-tags">Fashion, Коммерция</div>
+          </div>
+          <button class="heart-btn" onclick="event.stopPropagation();this.classList.toggle('liked')">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+            </svg>
+          </button>
+        </div>
+
+        <div class="model-card" onclick="goTo('profile')">
+          <div class="model-avatar">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L9.5 9.5 2 12l7.5 2.5L12 22l2.5-7.5L22 12l-7.5-2.5z"/></svg>
+          </div>
+          <div class="model-info">
+            <div class="model-name">Дарья Л.</div>
+            <div class="model-city">
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+              Казань
+            </div>
+            <div class="model-tags" id="darya-tags">Портрет, Бьюти</div>
+          </div>
+          <button class="heart-btn" onclick="event.stopPropagation();this.classList.toggle('liked')">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom Nav -->
+    <div class="bottom-nav">
+      <div class="nav-item active" onclick="goTo('home')">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+        <span id="nav-home">Главная</span>
+      </div>
+      <div class="nav-item" onclick="goTo('home')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        <span id="nav-search">Поиск</span>
+      </div>
+      <div class="nav-item" onclick="goTo('home')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+        <span id="nav-fav">Избранное</span>
+      </div>
+      <div class="nav-item" onclick="goTo('home')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        <span id="nav-msg">Сообщения</span>
+      </div>
+      <div class="nav-item" onclick="goTo('about')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        <span id="nav-profile">Профиль</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== PROFILE ===== -->
+  <div id="profile" class="screen">
+    <div class="profile-header">
+      <button class="back-btn" onclick="goTo('home')">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+      </button>
+      <button class="heart-btn" style="padding:8px" onclick="this.classList.toggle('liked')">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+        </svg>
+      </button>
+    </div>
+
+    <div class="profile-scroll">
+      <div class="profile-photo">
+        <svg width="64" height="64" viewBox="0 0 24 24" fill="currentColor" style="color:var(--accent);opacity:0.5">
+          <path d="M12 2L9.5 9.5 2 12l7.5 2.5L12 22l2.5-7.5L22 12l-7.5-2.5z"/>
+        </svg>
+        <div class="photo-counter">1/8</div>
+      </div>
+
+      <div class="profile-body">
+        <div class="profile-name">Алена С.</div>
+        <div class="profile-meta">
+          <div class="profile-city">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+            Москва
+          </div>
+          <div class="profile-rate" id="profile-rate">от 8 000 ₽ / час</div>
+        </div>
+        <div class="profile-tags">
+          <span class="tag" id="ptag1">Портрет</span>
+          <span class="tag">Fashion</span>
+          <span class="tag" id="ptag3">Бьюти</span>
+        </div>
+
+        <div class="profile-section-title" id="about-model-title">О модели</div>
+        <div class="profile-desc" id="profile-desc">Опыт работы более 3 лет. Съёмки для брендов одежды, бьюти и рекламных кампаний.</div>
+
+        <div class="profile-section-title" id="params-title">Параметры</div>
+        <div class="params-grid">
+          <div class="param-item">
+            <div class="param-label" id="p-height">Рост</div>
+            <div class="param-value">175</div>
+          </div>
+          <div class="param-item">
+            <div class="param-label" id="p-chest">Грудь</div>
+            <div class="param-value">85</div>
+          </div>
+          <div class="param-item">
+            <div class="param-label" id="p-waist">Талия</div>
+            <div class="param-value">60</div>
+          </div>
+          <div class="param-item">
+            <div class="param-label" id="p-hips">Бёдра</div>
+            <div class="param-value">90</div>
+          </div>
+          <div class="param-item">
+            <div class="param-label" id="p-shoes">Обувь</div>
+            <div class="param-value">39</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="profile-actions">
+      <button class="btn-contact" id="contact-btn">Связаться</button>
+      <button class="btn-more">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+          <circle cx="12" cy="5" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="12" cy="19" r="1.5"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- ===== ABOUT ===== -->
+  <div id="about" class="screen">
+    <div class="about-header">
+      <button class="back-btn" onclick="goTo('home')">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+      </button>
+      <div class="about-title" id="about-page-title">О сервисе</div>
+    </div>
+
+    <div class="about-scroll">
+      <div class="about-hero">
+        <div class="about-spark">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L9.5 9.5 2 12l7.5 2.5L12 22l2.5-7.5L22 12l-7.5-2.5z"/></svg>
+        </div>
+        <div class="about-headline" id="about-headline">GABONYA — ваш надёжный помощник в поиске фотомоделей</div>
+      </div>
+
+      <div class="features">
+        <div class="feature-item">
+          <div class="feature-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/>
+              <path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/>
+            </svg>
+          </div>
+          <div class="feature-text">
+            <div class="feature-title" id="f1-title">Большая база моделей</div>
+            <div class="feature-desc" id="f1-desc">Тысячи проверенных девушек в вашем городе и по всей России</div>
+          </div>
+        </div>
+        <div class="feature-item">
+          <div class="feature-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+            </svg>
+          </div>
+          <div class="feature-text">
+            <div class="feature-title" id="f2-title">Удобный поиск</div>
+            <div class="feature-desc" id="f2-desc">Фильтры по параметрам, стилю, опыту и местоположению</div>
+          </div>
+        </div>
+        <div class="feature-item">
+          <div class="feature-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.99 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.92 1h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 8.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/>
+            </svg>
+          </div>
+          <div class="feature-text">
+            <div class="feature-title" id="f3-title">Прямой контакт</div>
+            <div class="feature-desc" id="f3-desc">Связывайтесь с моделями напрямую без посредников</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="about-btn-wrap">
+        <button class="btn-primary" onclick="goTo('home')" style="width:100%">
+          <span id="about-start-btn">Начать поиск</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  let currentLang = 'ru';
+
+  const translations = {
+    ru: {
+      'splash-sub': 'Поиск фотомоделей',
+      'splash-headline': 'Находите свою идеальную фотомодель',
+      'splash-desc': 'Тысячи талантливых девушек для ваших проектов',
+      'splash-btn': 'Начать поиск',
+      'cats-title': 'Популярные категории',
+      'cats-all': 'Все',
+      'models-title': 'Популярные модели',
+      'models-all': 'Все',
+      'cat1': 'Портрет', 'cat2': 'Fashion', 'cat3': 'Бьюти', 'cat4': 'Коммерция',
+      'alena-tags': 'Портрет, Fashion, Бьюти',
+      'maria-tags': 'Fashion, Коммерция',
+      'darya-tags': 'Портрет, Бьюти',
+      'nav-home': 'Главная', 'nav-search': 'Поиск', 'nav-fav': 'Избранное',
+      'nav-msg': 'Сообщения', 'nav-profile': 'Профиль',
+      'profile-rate': 'от 8 000 ₽ / час',
+      'ptag1': 'Портрет', 'ptag3': 'Бьюти',
+      'about-model-title': 'О модели',
+      'profile-desc': 'Опыт работы более 3 лет. Съёмки для брендов одежды, бьюти и рекламных кампаний.',
+      'params-title': 'Параметры',
+      'p-height': 'Рост', 'p-chest': 'Грудь', 'p-waist': 'Талия', 'p-hips': 'Бёдра', 'p-shoes': 'Обувь',
+      'contact-btn': 'Связаться',
+      'about-page-title': 'О сервисе',
+      'about-headline': 'GABONYA — ваш надёжный помощник в поиске фотомоделей',
+      'f1-title': 'Большая база моделей',
+      'f1-desc': 'Тысячи проверенных девушек в вашем городе и по всей России',
+      'f2-title': 'Удобный поиск',
+      'f2-desc': 'Фильтры по параметрам, стилю, опыту и местоположению',
+      'f3-title': 'Прямой контакт',
+      'f3-desc': 'Связывайтесь с моделями напрямую без посредников',
+      'about-start-btn': 'Начать поиск',
+      'search-placeholder': 'Поиск по имени, стилю, местоположению',
+    },
+    en: {
+      'splash-sub': 'Model Search',
+      'splash-headline': 'Find your perfect photo model',
+      'splash-desc': 'Thousands of talented girls for your projects',
+      'splash-btn': 'Start Search',
+      'cats-title': 'Popular Categories',
+      'cats-all': 'All',
+      'models-title': 'Popular Models',
+      'models-all': 'All',
+      'cat1': 'Portrait', 'cat2': 'Fashion', 'cat3': 'Beauty', 'cat4': 'Commercial',
+      'alena-tags': 'Portrait, Fashion, Beauty',
+      'maria-tags': 'Fashion, Commercial',
+      'darya-tags': 'Portrait, Beauty',
+      'nav-home': 'Home', 'nav-search': 'Search', 'nav-fav': 'Saved',
+      'nav-msg': 'Messages', 'nav-profile': 'Profile',
+      'profile-rate': 'from ₽8,000 / hr',
+      'ptag1': 'Portrait', 'ptag3': 'Beauty',
+      'about-model-title': 'About',
+      'profile-desc': '3+ years of experience. Shoots for fashion brands, beauty, and advertising campaigns.',
+      'params-title': 'Measurements',
+      'p-height': 'Height', 'p-chest': 'Chest', 'p-waist': 'Waist', 'p-hips': 'Hips', 'p-shoes': 'Shoes',
+      'contact-btn': 'Contact',
+      'about-page-title': 'About',
+      'about-headline': 'GABONYA — your reliable partner in finding photo models',
+      'f1-title': 'Large Model Base',
+      'f1-desc': 'Thousands of verified girls in your city and across Russia',
+      'f2-title': 'Easy Search',
+      'f2-desc': 'Filter by measurements, style, experience, and location',
+      'f3-title': 'Direct Contact',
+      'f3-desc': 'Reach models directly without any intermediaries',
+      'about-start-btn': 'Start Search',
+      'search-placeholder': 'Search by name, style, location',
+    }
+  };
+
+  function goTo(screenId) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById(screenId).classList.add('active');
+  }
+
+  function setLang(lang) {
+    currentLang = lang;
+    document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+    event.target.classList.add('active');
+    applyLang();
+  }
+
+  function applyLang() {
+    const t = translations[currentLang];
+    for (const [id, text] of Object.entries(t)) {
+      const el = document.getElementById(id);
+      if (el) el.textContent = text;
+    }
+    const si = document.getElementById('search-input');
+    if (si) si.placeholder = t['search-placeholder'];
+  }
+</script>
+</body>
+</html>
