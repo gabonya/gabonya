@@ -6,6 +6,18 @@
       "sourceType": "github",
       "skillPath": "skills/find-skills/SKILL.md",
       "computedHash": "913b9d37d0d54047dd65222bb8c67b2bf04e3cb87dcad1729068d7a8b2c8c396"
+    },
+    "image": {
+      "source": "smixs/visual-skills",
+      "sourceType": "github",
+      "skillPath": "image/SKILL.md",
+      "computedHash": "fba73f0a6b9ebed817fb4e653754091f8ca9774c964772af08009cdfc91ec62d"
+    },
+    "video": {
+      "source": "smixs/visual-skills",
+      "sourceType": "github",
+      "skillPath": "video/SKILL.md",
+      "computedHash": "f43cfb62f4c6d81290f2676336edbb6104e327a7490c3defe16176c0f273a6b4"
     }
   }
 }
