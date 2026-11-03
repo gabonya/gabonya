@@ -1,0 +1,249 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Бутылка — три направления</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;700&family=Unbounded:wght@400;600&family=IBM+Plex+Mono:wght@400;500&family=Golos+Text:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* Направления A/B/C для карточки товара «Бутылка». Логотип — текстовая заглушка, заменить на вектор ФНС ЛАБ. */
+:root {
+  --cobalt-900: #04104a;
+  --cobalt-800: #0a1c86;
+  --cobalt-600: #1d3be0;
+  --cobalt-400: #4f6bff;
+  --steel-100: #f2f4f6;
+  --steel-400: #9aa1aa;
+  --steel-700: #4a5058;
+  --ink: #0f1420;
+  --ink-soft: #4b5262;
+  --paper: #ffffff;
+  --ice: #e9eef4;
+  --strap: #a3a8ae;
+  --font-a: "Onest", "Inter", sans-serif;
+  --font-b-head: "Unbounded", "Inter", sans-serif;
+  --font-b-body: "Onest", "Inter", sans-serif;
+  --font-c-head: "Golos Text", "Inter", sans-serif;
+  --font-c-mono: "IBM Plex Mono", "JetBrains Mono", monospace;
+}
+@page { size: 1920px 1080px; margin: 0; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { overflow-x: clip; background: var(--paper); }
+.page {
+  width: 1920px; height: 1080px; position: relative; overflow: hidden;
+  page-break-after: always; break-after: page;
+}
+.page:last-child { page-break-after: auto; break-after: auto; }
+.bottle svg { display: block; width: 100%; height: 100%; overflow: visible; }
+
+/* ---------- A · Каталожная карточка ---------- */
+.a { background: var(--ice); color: var(--ink); font-family: var(--font-a); }
+.a .big {
+  position: absolute; right: 30px; top: 150px;
+  font-weight: 700; font-size: 540px; line-height: .8; letter-spacing: -0.06em;
+  color: var(--paper); opacity: .85;
+}
+.a .big small { font-size: 130px; letter-spacing: -0.02em; font-weight: 500; margin-left: 10px; }
+.a .bottle { position: absolute; left: 1060px; top: 90px; width: 360px; height: 940px; }
+.a .text { position: absolute; left: 140px; top: 170px; width: 700px; }
+.a h1 { font-size: 132px; font-weight: 700; letter-spacing: -0.04em; line-height: 1; }
+.a .lead { margin-top: 40px; font-size: 38px; line-height: 1.35; color: var(--ink-soft); max-width: 620px; }
+.a dl { margin-top: 80px; border-top: 2px solid var(--ink); }
+.a dl div { display: grid; grid-template-columns: 240px 1fr; padding: 26px 0; border-bottom: 1px solid #c5ccd6; font-size: 32px; }
+.a dt { color: var(--ink-soft); }
+.a dd { font-weight: 500; }
+.a .foot { position: absolute; left: 140px; right: 140px; bottom: 60px; display: flex; justify-content: space-between; font-size: 24px; color: var(--ink-soft); }
+
+/* ---------- B · Глубина ---------- */
+.b {
+  background: radial-gradient(1200px 900px at 72% 45%, #1733c9 0%, var(--cobalt-800) 38%, var(--cobalt-900) 100%);
+  color: var(--paper); font-family: var(--font-b-body);
+}
+.b .caustics { position: absolute; inset: 0; opacity: .28; }
+.b .bottle { position: absolute; left: 1180px; top: 70px; width: 370px; height: 960px; filter: drop-shadow(0 40px 80px rgba(0,0,30,.55)); }
+.b .text { position: absolute; left: 140px; top: 150px; width: 860px; }
+.b h1 { font-family: var(--font-b-head); font-weight: 600; font-size: 104px; line-height: 1.04; letter-spacing: -0.02em; }
+.b .lead { margin-top: 44px; font-size: 36px; line-height: 1.4; color: #c9d3ff; max-width: 680px; }
+.b .specs { position: absolute; left: 140px; bottom: 110px; display: grid; grid-template-columns: 320px 400px 320px; gap: 0; }
+.b .specs div { border-left: 2px solid rgba(255,255,255,.35); padding: 6px 0 6px 30px; }
+.b .specs b { display: block; font-family: var(--font-b-head); font-weight: 400; font-size: 52px; line-height: 1.1; }
+.b .specs span { display: block; margin-top: 12px; font-size: 26px; color: #aebcff; }
+.b .name { position: absolute; right: 120px; bottom: 60px; font-size: 24px; color: #aebcff; }
+
+/* ---------- C · Технический лист ---------- */
+.c {
+  background-color: var(--paper);
+  background-image:
+    linear-gradient(#eef1f5 1px, transparent 1px),
+    linear-gradient(90deg, #eef1f5 1px, transparent 1px);
+  background-size: 40px 40px;
+  color: var(--ink); font-family: var(--font-c-head);
+}
+.c .bottle { position: absolute; left: 1080px; top: 80px; width: 350px; height: 920px; }
+.c .text { position: absolute; left: 140px; top: 150px; width: 720px; }
+.c .code { font-family: var(--font-c-mono); font-size: 24px; color: var(--cobalt-600); }
+.c h1 { margin-top: 24px; font-size: 120px; font-weight: 600; letter-spacing: -0.035em; line-height: 1; }
+.c .lead { margin-top: 36px; font-size: 36px; line-height: 1.4; color: var(--ink-soft); }
+.c .vol { position: absolute; left: 140px; bottom: 110px; display: flex; align-items: baseline; gap: 20px; }
+.c .vol b { font-size: 220px; font-weight: 600; letter-spacing: -0.05em; line-height: .8; color: var(--cobalt-600); }
+.c .vol span { font-family: var(--font-c-mono); font-size: 40px; color: var(--cobalt-600); }
+.c .callouts { position: absolute; inset: 0; pointer-events: none; }
+.c .callouts text { font-family: var(--font-c-mono); font-size: 26px; fill: var(--ink); }
+.c .callouts .sub { font-size: 22px; fill: var(--ink-soft); }
+.c .foot { position: absolute; right: 120px; bottom: 60px; font-family: var(--font-c-mono); font-size: 22px; color: var(--ink-soft); }
+</style>
+</head>
+<body>
+
+<!-- A -->
+<section class="page a">
+  <div class="big">500<small>мл</small></div>
+  <div class="bottle" data-variant="light"></div>
+  <div class="text">
+    <h1>Бутылка</h1>
+    <p class="lead">Удобная бутылка для воды, которую можно брать с собой.</p>
+    <dl>
+      <div><dt>Объём</dt><dd>500 мл</dd></div>
+      <div><dt>Материал</dt><dd>пищевой пластик</dd></div>
+      <div><dt>Нанесение</dt><dd>УФ-печать</dd></div>
+    </dl>
+  </div>
+  <div class="foot"><span>ФНС ЛАБ, каталог мерча</span><span>31</span></div>
+</section>
+
+<!-- B -->
+<section class="page b">
+  <svg class="caustics" viewBox="0 0 1920 1080" preserveAspectRatio="none" aria-hidden="true">
+    <defs>
+      <filter id="caust" x="0" y="0" width="100%" height="100%">
+        <feTurbulence type="fractalNoise" baseFrequency="0.004 0.009" numOctaves="2" seed="7" result="n"/>
+        <feColorMatrix in="n" type="matrix" values="0 0 0 0 0.55  0 0 0 0 0.68  0 0 0 0 1  0 0 0 9 -4.6"/>
+        <feGaussianBlur stdDeviation="2"/>
+      </filter>
+      <linearGradient id="fade" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#fff" stop-opacity="1"/>
+        <stop offset=".7" stop-color="#fff" stop-opacity="0"/>
+      </linearGradient>
+      <mask id="fadeMask"><rect width="1920" height="1080" fill="url(#fade)"/></mask>
+    </defs>
+    <rect width="1920" height="1080" filter="url(#caust)" mask="url(#fadeMask)"/>
+  </svg>
+  <div class="bottle" data-variant="glow"></div>
+  <div class="text">
+    <h1>Вода всегда под рукой</h1>
+    <p class="lead">Удобная бутылка для воды, которую можно брать с собой: на работу, в дорогу, на тренировку.</p>
+  </div>
+  <div class="specs">
+    <div><b>500 мл</b><span>объём</span></div>
+    <div><b>пищевой</b><span>пластик</span></div>
+    <div><b>УФ</b><span>печать логотипа</span></div>
+  </div>
+  <div class="name">Бутылка, ФНС ЛАБ</div>
+</section>
+
+<!-- C -->
+<section class="page c">
+  <div class="bottle" data-variant="light"></div>
+  <svg class="callouts" viewBox="0 0 1920 1080" aria-hidden="true">
+    <g stroke="#1d3be0" stroke-width="2" fill="none">
+      <circle cx="1260" cy="130" r="7" fill="#1d3be0"/>
+      <polyline points="1260,130 1530,130 1560,110"/>
+      <circle cx="1372" cy="425" r="8" fill="#fff" stroke-width="3"/>
+      <polyline points="1380,425 1470,340 1560,340"/>
+      <circle cx="1255" cy="700" r="8" fill="#fff" stroke-width="3"/>
+      <polyline points="1255,700 1560,700"/>
+      <circle cx="1110" cy="470" r="7" fill="#1d3be0"/>
+      <polyline points="1110,470 950,470"/>
+    </g>
+    <text x="1580" y="118">крышка</text>
+    <text x="1580" y="336">логотип</text>
+    <text class="sub" x="1580" y="372">УФ-печать</text>
+    <text x="1580" y="696">корпус</text>
+    <text class="sub" x="1580" y="732">пищевой пластик</text>
+    <text x="930" y="462" text-anchor="end">ремешок</text>
+    <text class="sub" x="930" y="500" text-anchor="end">для переноски</text>
+  </svg>
+  <div class="text">
+    <div class="code">мерч / напитки / 31</div>
+    <h1>Бутылка</h1>
+    <p class="lead">Удобная бутылка для воды, которую можно брать с собой.</p>
+  </div>
+  <div class="vol"><b>500</b><span>мл</span></div>
+  <div class="foot">ФНС ЛАБ</div>
+</section>
+
+<script>
+// Процедурная бутылка: прозрачный кобальтовый пластик, металлическая крышка, ремешок, УФ-логотип.
+function bottleSVG(id, variant) {
+  const glow = variant === 'glow';
+  return `
+<svg viewBox="0 0 300 800" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="body${id}" x1="0" x2="1">
+      <stop offset="0" stop-color="#061470"/>
+      <stop offset=".18" stop-color="#1230c4"/>
+      <stop offset=".42" stop-color="#2b4cf0"/>
+      <stop offset=".62" stop-color="#1f3fe2"/>
+      <stop offset=".88" stop-color="#0d24a8"/>
+      <stop offset="1" stop-color="#050f5c"/>
+    </linearGradient>
+    <linearGradient id="cap${id}" x1="0" x2="1">
+      <stop offset="0" stop-color="#5d636b"/>
+      <stop offset=".15" stop-color="#c9ced4"/>
+      <stop offset=".3" stop-color="#f4f6f8"/>
+      <stop offset=".45" stop-color="#9ea5ad"/>
+      <stop offset=".7" stop-color="#d8dce0"/>
+      <stop offset=".9" stop-color="#7b828a"/>
+      <stop offset="1" stop-color="#4d535a"/>
+    </linearGradient>
+    <linearGradient id="hl${id}" x1="0" x2="1">
+      <stop offset="0" stop-color="#fff" stop-opacity="0"/>
+      <stop offset=".5" stop-color="#fff" stop-opacity=".55"/>
+      <stop offset="1" stop-color="#fff" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="bottomg${id}" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#000" stop-opacity="0"/>
+      <stop offset="1" stop-color="#020843" stop-opacity=".55"/>
+    </linearGradient>
+    <radialGradient id="shadow${id}">
+      <stop offset="0" stop-color="${glow ? '#000016' : '#1a2340'}" stop-opacity="${glow ? .6 : .35}"/>
+      <stop offset="1" stop-color="#000" stop-opacity="0"/>
+    </radialGradient>
+    <clipPath id="clip${id}"><path d="${BODY}"/></clipPath>
+  </defs>
+  <ellipse cx="160" cy="788" rx="150" ry="16" fill="url(#shadow${id})"/>
+  <!-- ремешок, задняя часть -->
+  <path d="M112 132 C 60 150, 22 230, 26 330 L 34 560" fill="none" stroke="#7e848b" stroke-width="11" stroke-linecap="round"/>
+  <!-- корпус -->
+  <path d="${BODY}" fill="url(#body${id})" opacity=".97"/>
+  <g clip-path="url(#clip${id})">
+    <rect x="0" y="560" width="300" height="240" fill="url(#bottomg${id})"/>
+    <rect x="74" y="190" width="26" height="590" fill="url(#hl${id})" opacity=".9"/>
+    <rect x="112" y="230" width="8" height="540" fill="url(#hl${id})" opacity=".5"/>
+    <rect x="238" y="200" width="16" height="580" fill="url(#hl${id})" opacity=".35"/>
+    <ellipse cx="150" cy="768" rx="118" ry="16" fill="none" stroke="#7d93ff" stroke-opacity=".5" stroke-width="3"/>
+    <!-- УФ-логотип: текстовая заглушка -->
+    <g fill="#fff" font-family="Onest, Inter, sans-serif" font-weight="700">
+      <text x="196" y="300" font-size="40" text-anchor="middle" letter-spacing="1">ФНС</text>
+      <text x="196" y="342" font-size="40" text-anchor="middle" letter-spacing="1">ЛАБ</text>
+    </g>
+  </g>
+  <!-- горлышко -->
+  <rect x="98" y="118" width="124" height="26" rx="6" fill="#0b1f9c"/>
+  <rect x="98" y="118" width="124" height="26" rx="6" fill="url(#hl${id})" opacity=".35"/>
+  <!-- крышка -->
+  <rect x="92" y="14" width="136" height="108" rx="10" fill="url(#cap${id})"/>
+  <rect x="92" y="14" width="136" height="8" rx="4" fill="#fff" opacity=".5"/>
+  <rect x="92" y="112" width="136" height="10" rx="3" fill="#000" opacity=".18"/>
+  <!-- петля ремешка и фиксатор -->
+  <path d="M100 128 C 70 120, 70 150, 98 150" fill="none" stroke="#b9bec4" stroke-width="10" stroke-linecap="round"/>
+  <path d="M42 330 L 50 560 C 52 590, 22 590, 26 560" fill="none" stroke="#b4b9bf" stroke-width="11" stroke-linecap="round"/>
+  <path d="M98 150 C 66 170, 40 240, 42 330" fill="none" stroke="#b4b9bf" stroke-width="11" stroke-linecap="round"/>
+  <rect x="44" y="196" width="22" height="56" rx="6" fill="#16181c" transform="rotate(24 55 224)"/>
+</svg>`;
+}
+const BODY = "M112 144 L208 144 C 214 190, 262 214, 268 300 L 268 744 C 268 778, 246 784, 150 784 C 54 784, 32 778, 32 744 L 32 300 C 38 214, 106 190, 112 144 Z";
+document.querySelectorAll('.bottle').forEach((el, i) => { el.innerHTML = bottleSVG(i, el.dataset.variant); });
+</script>
+</body>
+</html>
