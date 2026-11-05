@@ -5,21 +5,24 @@ setlocal EnableExtensions
 rem ============================================================
 rem  Настройка ведомственного УЦ ФНС России
 rem  на АРМ Администратора Центра регистрации
+rem
+rem  Запускать: правой кнопкой -> "Запуск от имени администратора".
+rem  Если файлы .crt лежат рядом с этим .bat, они берутся оттуда,
+rem  иначе скачиваются с http://c0000-app005/crt/
 rem ============================================================
 
-rem --- Проверка прав администратора ---
 net session >nul 2>&1
-if %errorlevel% neq 0 (
-    echo Запрашиваю права администратора...
-    powershell -NoProfile -Command "Start-Process -FilePath '%~f0' -Verb RunAs"
-    exit /b
+if errorlevel 1 (
+    echo Нужны права администратора.
+    echo Нажмите на файл правой кнопкой и выберите "Запуск от имени администратора".
+    echo.
+    pause
+    exit /b 1
 )
 
 set "BASE_URL=http://c0000-app005/crt"
-set "TMPDIR=%TEMP%\fns_certs"
+set "SRC=%~dp0"
 set "ERRORS=0"
-
-if not exist "%TMPDIR%" mkdir "%TMPDIR%"
 
 echo.
 echo [1/3] Корневой сертификат Минцифры -^> Доверенные корневые центры сертификации
@@ -33,8 +36,6 @@ echo.
 echo [3/3] Сертификат УЦ безопасности ФНС России -^> Доверенные корневые центры сертификации
 call :install "CA_Security_2026.crt" Root
 
-rmdir /s /q "%TMPDIR%" >nul 2>&1
-
 echo.
 if %ERRORS% equ 0 (
     echo Все сертификаты успешно установлены.
@@ -45,28 +46,26 @@ echo.
 pause
 exit /b %ERRORS%
 
-rem ------------------------------------------------------------
-rem  :install <имя_файла> <хранилище>
-rem ------------------------------------------------------------
 :install
 set "FILE=%~1"
 set "STORE=%~2"
-set "DEST=%TMPDIR%\%FILE%"
+set "CRT=%SRC%%FILE%"
 
-echo   Скачивание %BASE_URL%/%FILE% ...
-certutil -urlcache -split -f "%BASE_URL%/%FILE%" "%DEST%" >nul 2>&1
-if not exist "%DEST%" (
-    powershell -NoProfile -Command "try { Invoke-WebRequest -UseBasicParsing -Uri '%BASE_URL%/%FILE%' -OutFile '%DEST%' } catch { exit 1 }" >nul 2>&1
+if exist "%CRT%" (
+    echo   Найден файл рядом со скриптом: %FILE%
+) else (
+    set "CRT=%TEMP%\%FILE%"
+    echo   Скачивание %BASE_URL%/%FILE% ...
+    powershell -NoProfile -Command "Invoke-WebRequest -UseBasicParsing -Uri '%BASE_URL%/%FILE%' -OutFile '%TEMP%\%FILE%'"
 )
-if not exist "%DEST%" (
-    echo   ОШИБКА: не удалось скачать %FILE%
+if not exist "%CRT%" (
+    echo   ОШИБКА: файл %FILE% не найден и не скачан
     set /a ERRORS+=1
     exit /b 1
 )
 
-echo   Установка в хранилище %STORE% ...
-certutil -f -addstore %STORE% "%DEST%" >nul
-if %errorlevel% neq 0 (
+certutil -f -addstore %STORE% "%CRT%"
+if errorlevel 1 (
     echo   ОШИБКА: не удалось установить %FILE%
     set /a ERRORS+=1
     exit /b 1
