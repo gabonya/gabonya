@@ -70,7 +70,6 @@ for %%F in (
     caGS.crt
     CROSS_DUC.p7b
     crtFNS.p7b
-    FNS_Russia_RSA.crt
     guc.crt
     guc2022.crt
     guc2026.crt
@@ -82,10 +81,11 @@ for %%F in (
     vguc1_5.crt
 ) do call :dl crt %%F
 
-:: Файлы с кириллицей в имени: URL в UTF-8 percent-encoding
+:: Файлы с пробелами/кириллицей в имени: URL в percent-encoding (%%20 = пробел)
+curl -f -s -S -o "%CERTDIR%\crt\FNS_Russia_RSA.crt" "%BASE%/crt/FNS%%20Russia%%20RSA.crt" || call :fail "crt/FNS Russia RSA.crt"
 :: (%%D0%%A4%%D0%%9D%%D0%%A1 = ФНС, %%D0%%A0%%D0%%BE%%D1%%81%%D1%%81%%D0%%B8%%D0%%B8 = России, %%D0%%9A%%D0%%9E%%D0%%AD = КОЭ)
-curl -f -s -S -o "%CERTDIR%\crt\FNS_Rossii_2.crt" "%BASE%/crt/%%D0%%A4%%D0%%9D%%D0%%A1_%%D0%%A0%%D0%%BE%%D1%%81%%D1%%81%%D0%%B8%%D0%%B8_2.crt" || call :fail "crt/ФНС_России_2.crt"
-curl -f -s -S -o "%CERTDIR%\crt\FNS_Rossii_3.crt" "%BASE%/crt/%%D0%%A4%%D0%%9D%%D0%%A1_%%D0%%A0%%D0%%BE%%D1%%81%%D1%%81%%D0%%B8%%D0%%B8_3.crt" || call :fail "crt/ФНС_России_3.crt"
+curl -f -s -S -o "%CERTDIR%\crt\FNS_Rossii_2.crt" "%BASE%/crt/%%D0%%A4%%D0%%9D%%D0%%A1%%20%%D0%%A0%%D0%%BE%%D1%%81%%D1%%81%%D0%%B8%%D0%%B8%%202.crt" || call :fail "crt/ФНС России 2.crt"
+curl -f -s -S -o "%CERTDIR%\crt\FNS_Rossii_3.crt" "%BASE%/crt/%%D0%%A4%%D0%%9D%%D0%%A1%%20%%D0%%A0%%D0%%BE%%D1%%81%%D1%%81%%D0%%B8%%D0%%B8%%203.crt" || call :fail "crt/ФНС России 3.crt"
 curl -f -s -S -o "%CERTDIR%\crt\FNS_Rossii_KOE_2026.cer" "%BASE%/crt/%%D0%%A4%%D0%%9D%%D0%%A1_%%D0%%A0%%D0%%BE%%D1%%81%%D1%%81%%D0%%B8%%D0%%B8_%%D0%%9A%%D0%%9E%%D0%%AD_2026.cer" || call :fail "crt/ФНС_России_КОЭ_2026.cer"
 
 :: ------------------------------------------------------------
