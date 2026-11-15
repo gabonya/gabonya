@@ -1,0 +1,19 @@
+version: 2.10.0
+apkFileName: 2-okko-zona.apk
+isFrameworkApk: false
+usesFramework:
+  ids:
+  - 1
+  tag: null
+sdkInfo:
+  minSdkVersion: 21
+  targetSdkVersion: 29
+packageInfo:
+  forcedPackageId: 127
+  renameManifestPackage: null
+versionInfo:
+  versionCode: 2000000000
+  versionName: remap-1.0
+sharedLibrary: false
+resourcesAreCompressed: false
+sparseResources: false
