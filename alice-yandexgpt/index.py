@@ -5,7 +5,7 @@
 #
 # Переменные окружения:
 # FOLDER_ID - ID каталога Yandex Cloud (обязательно)
-# MODEL - yandexgpt-lite (по умолчанию, быстрее) или yandexgpt
+# MODEL - yandexgpt-lite (по умолчанию, быстрее), yandexgpt или модель с веткой, например yandexgpt/rc
 # API_KEY - необязательно: API-ключ сервисного аккаунта; если не задан,
 # используется IAM-токен сервисного аккаунта самой функции
 import json
@@ -50,7 +50,7 @@ def ask_gpt(question, history, context):
         messages.append({"role": "assistant", "text": bot_text})
     messages.append({"role": "user", "text": question})
     body = {
-        "modelUri": f"gpt://{folder}/{model}/latest",
+        "modelUri": f"gpt://{folder}/{model}" if "/" in model else f"gpt://{folder}/{model}/latest",
         "completionOptions": {"stream": False, "temperature": 0.5, "maxTokens": str(MAX_TOKENS)},
         "messages": messages,
     }
